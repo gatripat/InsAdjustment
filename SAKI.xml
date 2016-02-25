@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CompactData
+	xmlns:common="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/common"
+	xmlns:compact="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/compact"
+	xmlns:generic="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/generic"
+	xmlns="http://www.haver.com/resources/SDMXML/schemas/v2_0/haver"
+	xmlns:haver="http://www.haver.com/resources/SDMXML/schemas/v2_0/haver"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/message SDMXMessage.xsd
+		http://www.SDMX.org/resources/SDMXML/schemas/v2_0/common SDMXCommon.xsd
+		http://www.SDMX.org/resources/SDMXML/schemas/v2_0/compact SDMXCompactData.xsd
+		http://www.SDMX.org/resources/SDMXML/schemas/v2_0/generic SDMXGenericData.xsd
+		http://www.haver.com/resources/SDMXML/schemas/v2_0/haver haver_v2.xsd">
+	<haver:DataSet>
+		<haver:Series NAME="A2FGQ" DESCRIPTION="UK: MQ5: L-T Funds Income: Life Assurance: Single Premiums(Mil.GBP)" FREQ="Q" TIME_FORMAT="P3M" COLLECTION="S" UNIT_MULT="6" DECIMALS="0" DATA_TYPE="LocCur" GROUP="P71" GEOGRAPHY="112" SHORT_SOURCE="ONS" LONG_SOURCE="Office for National Statistics">
+			<haver:Obs TIME_PERIOD="2003-1" OBS_VALUE="4537" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2003-2" OBS_VALUE="4994" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2003-3" OBS_VALUE="4170" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2003-4" OBS_VALUE="5006" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2004-1" OBS_VALUE="4748" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2004-2" OBS_VALUE="4565" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2004-3" OBS_VALUE="5916" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2004-4" OBS_VALUE="6108" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2005-1" OBS_VALUE="6009" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2005-2" OBS_VALUE="6357" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2005-3" OBS_VALUE="6189" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2005-4" OBS_VALUE="8573" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2006-1" OBS_VALUE="7512" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2006-2" OBS_VALUE="6325" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2006-3" OBS_VALUE="7262" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2006-4" OBS_VALUE="9702" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2007-1" OBS_VALUE="9804" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2007-2" OBS_VALUE="9801" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2007-3" OBS_VALUE="9330" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2007-4" OBS_VALUE="10674" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2008-1" OBS_VALUE="8136" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2008-2" OBS_VALUE="7251" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2008-3" OBS_VALUE="6357" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2008-4" OBS_VALUE="4172" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2009-1" OBS_VALUE="2985" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2009-2" OBS_VALUE="2939" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2009-3" OBS_VALUE="2609" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2009-4" OBS_VALUE="2926" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2010-1" OBS_VALUE="2491" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2010-2" OBS_VALUE="3738" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2010-3" OBS_VALUE="2610" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2010-4" OBS_VALUE="2934" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2011-1" OBS_VALUE="2730" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2011-2" OBS_VALUE="2659" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2011-3" OBS_VALUE="2315" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2011-4" OBS_VALUE="2285" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2012-1" OBS_VALUE="2350" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2012-2" OBS_VALUE="2531" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2012-3" OBS_VALUE="2271" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2012-4" OBS_VALUE="3006" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2013-1" OBS_VALUE="1442" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2013-2" OBS_VALUE="1470" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2013-3" OBS_VALUE="1531" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2013-4" OBS_VALUE="1754" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2014-1" OBS_VALUE="1569" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2014-2" OBS_VALUE="1529" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2014-3" OBS_VALUE="1617" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2014-4" OBS_VALUE="1825" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2015-1" OBS_VALUE="1487" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2015-2" OBS_VALUE="1784" OBS_STATUS="A" />
+			<haver:Obs TIME_PERIOD="2015-3" OBS_VALUE="1883" OBS_STATUS="A" />
+		</haver:Series>
+	</haver:DataSet>
+</CompactData>
