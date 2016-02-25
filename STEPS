@@ -1,0 +1,1 @@
+hadoop jar ifrs.jar test.test test.refined /BIGDATA/test.refined  /BIGDATA/FINAL_OUT1234 9.109.122.99  1988 2020
