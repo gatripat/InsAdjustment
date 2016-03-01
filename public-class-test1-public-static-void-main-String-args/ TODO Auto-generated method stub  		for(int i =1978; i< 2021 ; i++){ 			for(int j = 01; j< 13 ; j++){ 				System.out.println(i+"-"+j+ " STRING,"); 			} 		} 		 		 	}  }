@@ -1,0 +1,15 @@
+public class test1 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		for(int i =1978; i< 2021 ; i++){
+			for(int j = 01; j< 13 ; j++){
+				System.out.println(i+"-"+j+ " STRING,");
+			}
+		}
+		
+		
+	}
+
+}
