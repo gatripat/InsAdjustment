@@ -1,0 +1,240 @@
+package com.barclays.hbase.load;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.client.Delete;
+import org.apache.hadoop.hbase.client.Get;
+import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.log4j.Logger;
+
+public class PSDMDelta {
+	private static String ZK_SRVR = "9.109.122.99:2181";
+	private static String hdfsDir = "";
+	private static String FUTURE_DATE = "31991231";
+	private static String headFileAHist = "pId,productId,ParticipantId,startDate,EndDate,flag";
+	private static String headFileBHist = "personId,Gender,Address,startDate,EndDate,flag";
+	private static String headFileASnap = "pId,productId,ParticipantId,startDate,EndDate";
+	private static String headFileBSnap = "personId,Gender,Address,startDate,EndDate";
+	static Logger log = Logger.getLogger(PSDMDelta.class);
+
+	public static void main(String[] args) throws IOException, URISyntaxException {
+		DateFormat format = new SimpleDateFormat("yyyyMMdd");	
+		Configuration configuration = new Configuration();
+		PSDMDelta psdm = new PSDMDelta();
+		FileSystem hdfs = FileSystem.get(new URI("hdfs://" + "9.109.122.99"), configuration);
+		// Reading data From HDFS File
+		BufferedReader bfr = new BufferedReader(new InputStreamReader(hdfs.open(new Path(args[0]))));
+		log.info("Reading from HDFS file." + args[0]);
+		System.out.println("Reading from HDFS file." + args[0]);
+		String str = null;
+		String[] qual = null;
+		String flag = "";
+		int trig = 0;
+		if (args[0].contains("A_HIST")) {
+			while ((str = bfr.readLine()) != null) {
+				try {
+					qual = str.split(",", -1);
+					if (qual[qual.length - 1].equalsIgnoreCase("U")) {
+						flag = "U";
+						System.out.println("------------------------UPDATE FLAG CONFRONTED ---------------");
+						if(format.parse(qual[4]).compareTo(format.parse("31991231")) < 0){
+						psdm.doDelta(qual[0], "9ps", "snap", headFileAHist,"A");
+						trig ++;
+						}
+					}
+					if (qual[qual.length - 1].equalsIgnoreCase("I")) {
+						flag = "I";
+					}
+					if (qual[qual.length - 1].equalsIgnoreCase("D")) {
+						flag = "D";
+						psdm.delRecord("9ps", str.split(",", -1)[0]);
+					}
+					if (str.split(",", -1)[4].trim().equals(FUTURE_DATE)) {
+						psdm.putInHbase(flag, "9ps", "snap", headFileASnap, str,"A");
+					} else {
+						psdm.putInHbase(flag, "9ps", "new", headFileAHist, str,"A");
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+		}
+		if (args[0].contains("A_SNAP")) {
+			flag = "snap";
+			while ((str = bfr.readLine()) != null) {
+				try {
+					psdm.putInHbase(flag, "9ps", "snap", headFileASnap, str,"A");
+					psdm.putInHbase(flag, "9ps", "new", headFileAHist, str,"A");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+
+		if (args[0].contains("B_SNAP")) {
+			flag = "snap";
+			while ((str = bfr.readLine()) != null) {
+				try {
+
+					psdm.putInHbase(flag, "9ps", "snap", headFileBSnap, str,"B");
+					psdm.putInHbase(flag, "9ps", "new", headFileBHist, str,"B");
+				} catch (Exception e) {
+
+					e.printStackTrace();
+				}
+
+			}
+		}
+
+		if (args[0].contains("B_HIST")) {
+			while ((str = bfr.readLine()) != null) {
+				try {
+					qual = str.split("\\|", -1);
+					if (qual[qual.length - 1].equalsIgnoreCase("U")) {
+						flag = "U";
+						if(format.parse(qual[4]).compareTo(format.parse("31991231")) < 0){
+							psdm.doDelta(qual[0], "9ps", "snap", headFileBHist,"B");
+								}
+						
+					}
+					if (qual[qual.length - 1].equalsIgnoreCase("I")) {
+						flag = "I";
+					}
+					if (qual[qual.length - 1].equalsIgnoreCase("D")) {
+						flag = "D";
+
+						psdm.delRecord("9ps", str.split("\\|", -1)[0]);
+					}
+					if (str.split("\\|", -1)[4].trim().equals(FUTURE_DATE)) {
+						psdm.putInHbase(flag, "9ps", "snap", headFileBSnap, str,"B");
+					} else{
+						log.info(">>>>>>>>>>> IN ELSE <<<<<<<<<<<<<");;
+						psdm.putInHbase(flag, "9ps", "new", headFileBHist, str,"B");
+					}
+
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+		}
+	}
+
+	public void doDelta(String rowId, String table1, String cf, String qual, String file) throws IOException, Exception {
+		Configuration config = HBaseConfiguration.create();
+		//String tokenizer = file.equalsIgnoreCase("A") ? "," : "\\|"; 
+		config.set("hbase.zookeeper.quorum", ZK_SRVR);
+		HTable table = new HTable(config, table1);
+	
+		try {
+			Get g = new Get(Bytes.toBytes(rowId));
+			Result result = table.get(g);
+			byte[] value;
+			Put p ;
+			for(String q: qual.split(",",-1)){
+				if(!(q.equalsIgnoreCase("flag") ||q.equalsIgnoreCase("pId") || q.equalsIgnoreCase("personId")) ){
+				value = result.getValue(Bytes.toBytes("snap"), Bytes.toBytes(q));
+				log.info("===> data GET: Hbase row : " +rowId+" qualifier : "+q+"value : "+Bytes.toString(value));
+				p=new Put(Bytes.toBytes(rowId));
+				
+				p.add(Bytes.toBytes("old"), Bytes.toBytes(q), value);
+				p.add(Bytes.toBytes("new"), Bytes.toBytes(q), value);
+				table.put(p);
+				System.out.println("-----------------DELTA UPSERT DONE ------------");
+				}
+			}
+			
+			log.info("===> data inserted in Hbase");
+			table.close();
+		
+		} catch (Exception ex) {
+ex.printStackTrace();
+		}
+		table.close();
+	
+
+	}
+
+	public void delRecord(String tableName, String rowKey) throws IOException {
+		Configuration config = HBaseConfiguration.create();
+		config.set("hbase.zookeeper.quorum", ZK_SRVR);
+		HTable table = new HTable(config, tableName);
+		List<Delete> list = new ArrayList<Delete>();
+		Delete del = new Delete(rowKey.getBytes());
+		list.add(del);
+		table.delete(list);
+		System.out.println("del recored " + rowKey + " ok.");
+		table.close();
+	}
+
+	/*
+	 * public String getRow(String table1, String cf, String qual) throws
+	 * IOException, Exception { try { Configuration config =
+	 * HBaseConfiguration.create(); config.set("hbase.zookeeper.quorum",
+	 * ZK_SRVR); HTable table = new HTable(config, table1); Scan s = new Scan();
+	 * s.setCacheBlocks(true); s.setCaching(500); s.setMaxVersions(1); Filter
+	 * rowFilter = new RowFilter(CompareOp.EQUAL, new
+	 * BinaryComparator(Bytes.toBytes(""))); FilterList filterList = new
+	 * FilterList(FilterList.Operator.MUST_PASS_ALL, rowFilter); Scan scan = new
+	 * Scan(); scan.setFilter(filterList);
+	 * 
+	 * 
+	 * ResultScanner ss = table.getScanner(s); for (Result r : ss) { for
+	 * (KeyValue kv : r.raw()) { System.out.print(new String(kv.getRow()) + " "
+	 * ); System.out.print(new String(kv.getFamily()) + ":");
+	 * System.out.print(new String(kv.getQualifier()) + " ");
+	 * System.out.print(kv.getTimestamp() + " "); System.out.println(new
+	 * String(kv.getValue())); } } table.close(); } catch (IOException e) {
+	 * e.printStackTrace(); }
+	 * 
+	 * return qual;
+	 * 
+	 * }
+	 */
+	public void putInHbase(String flag, String table1, String cf, String qualifier, String data, String file) {
+		if (!flag.equals("D")) {
+			try {
+				System.out.println("trying to put data in Hbase + : "+ data);
+				// Instantiating Configuration class
+				Configuration config = HBaseConfiguration.create();
+				config.set("hbase.zookeeper.quorum", ZK_SRVR);
+				HTable table = new HTable(config, table1);
+				long explicitTs = System.currentTimeMillis();
+				String dataArr[] = file.equalsIgnoreCase("A") ? data.split(",", -1) : data.split("\\|", -1); 
+						
+				String qualArr[] = qualifier.split(",", -1);
+				Put p = new Put(Bytes.toBytes(dataArr[0]));
+				for (int i = 1; i < dataArr.length -1 ; i++) {
+					log.info("In For Loop : " + dataArr[i]);
+					p.add(Bytes.toBytes(cf), Bytes.toBytes(qualArr[i]), explicitTs, Bytes.toBytes(dataArr[i]));
+				}
+				table.put(p);
+				log.info("data inserted in Hbase");
+				table.close();
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+}
